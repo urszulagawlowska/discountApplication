@@ -1,4 +1,4 @@
-package gawlowska.urszula.discoutApplication;
+package gawlowska.urszula.discountApplication;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -7,7 +7,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class DiscoutApplicationTests {
+public class DiscountApplicationTests {
 
 	@Test
 	public void contextLoads() {
