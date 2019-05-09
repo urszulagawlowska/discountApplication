@@ -1,17 +1,17 @@
 package gawlowska.urszula.discountApplication.model;
 
 public class Discount {
-    private double amount;
+    private double discountAmount;
 
-    public Discount(double amount) {
-        this.amount = amount;
+    public Discount(double discountAmount) {
+        this.discountAmount = discountAmount;
     }
 
-    public double getAmount() {
-        return amount;
+    public double getDiscountAmount() {
+        return discountAmount;
     }
 
-    public void setAmount(double amount) {
-        this.amount = amount;
+    public void setDiscountAmount(double discountAmount) {
+        this.discountAmount = discountAmount;
     }
 }

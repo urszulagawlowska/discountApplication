@@ -13,9 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
@@ -56,7 +54,7 @@ public class DiscountServiceImplTest {
         allProducts.add(new Product("Product3", 89.99));
         allProducts.add(new Product("Product4", 10.26));
         allProducts.add(new Product("Product5", 55.57));
-        totalDiscount.setAmount(-5);
+        totalDiscount.setDiscountAmount(-5);
 
         when(productRepository.getAllProducts()).thenReturn(allProducts);
         when(discountRepository.getDiscount()).thenReturn(totalDiscount);
@@ -102,7 +100,7 @@ public class DiscountServiceImplTest {
         discountService = new DiscountServiceImpl(productRepository, discountRepository);
 
         assertEquals(1, discountService.getProductsWithDiscounts().size());
-        assertEquals(product1.getPrice(), discountService.getProductsWithDiscounts().entrySet().iterator().next().getValue().getAmount(), 0);
+        assertEquals(product1.getPrice(), discountService.getProductsWithDiscounts().entrySet().iterator().next().getValue().getDiscountAmount(), 0);
     }
 
     @Test()
@@ -117,8 +115,8 @@ public class DiscountServiceImplTest {
         discountService = new DiscountServiceImpl(productRepository, discountRepository);
 
         assertEquals(2, discountService.getProductsWithDiscounts().size());
-        assertEquals(product1.getPrice(), discountService.getProductsWithDiscounts().get(product1).getAmount(), 0);
-        assertEquals(product2.getPrice(), discountService.getProductsWithDiscounts().get(product2).getAmount(), 0);
+        assertEquals(product1.getPrice(), discountService.getProductsWithDiscounts().get(product1).getDiscountAmount(), 0);
+        assertEquals(product2.getPrice(), discountService.getProductsWithDiscounts().get(product2).getDiscountAmount(), 0);
     }
 
     @Test
@@ -129,14 +127,14 @@ public class DiscountServiceImplTest {
         allProducts.add(product1);
         allProducts.add(product2);
         allProducts.add(product3);
-        totalDiscount.setAmount(30);
+        totalDiscount.setDiscountAmount(30);
 
         when(productRepository.getAllProducts()).thenReturn(allProducts);
         when(discountRepository.getDiscount()).thenReturn(totalDiscount);
         discountService = new DiscountServiceImpl(productRepository, discountRepository);
 
         assertEquals(3, discountService.getProductsWithDiscounts().size());
-        assertEquals(10.63, discountService.getProductsWithDiscounts().get(product3).getAmount(), 0);
+        assertEquals(10.63, discountService.getProductsWithDiscounts().get(product3).getDiscountAmount(), 0);
     }
 
     @Test
@@ -146,7 +144,7 @@ public class DiscountServiceImplTest {
         allProducts.add(new Product("Product3", 8.27));
         allProducts.add(new Product("Product4", 5.89));
         allProducts.add(new Product("Product5", 13.24));
-        totalDiscount.setAmount(51.74);
+        totalDiscount.setDiscountAmount(51.74);
 
         when(productRepository.getAllProducts()).thenReturn(allProducts);
         when(discountRepository.getDiscount()).thenReturn(totalDiscount);
@@ -155,9 +153,9 @@ public class DiscountServiceImplTest {
         double grantedDiscount = 0;
 
         for (Discount discount : discountService.getProductsWithDiscounts().values()) {
-            grantedDiscount += discount.getAmount();
+            grantedDiscount += discount.getDiscountAmount();
         }
 
-        assertEquals(grantedDiscount, totalDiscount.getAmount(), 0.001);
+        assertEquals(grantedDiscount, totalDiscount.getDiscountAmount(), 0.001);
     }
 }

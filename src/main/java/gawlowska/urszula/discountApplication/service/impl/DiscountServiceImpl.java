@@ -28,7 +28,7 @@ public class DiscountServiceImpl implements DiscountService {
         this.productRepository = productRepository;
         this.discountRepository = discountRepository;
         this.allProducts = productRepository.getAllProducts();
-        this.totalDiscountAmount = discountRepository.getDiscount().getAmount();
+        this.totalDiscountAmount = discountRepository.getDiscount().getDiscountAmount();
     }
 
     @Override
@@ -67,7 +67,7 @@ public class DiscountServiceImpl implements DiscountService {
     }
 
     private double calculateDiscountForLastProduct(Map<Product, Discount> productDiscountMap) {
-        double grantedDiscount = productDiscountMap.entrySet().stream().mapToDouble(entry -> entry.getValue().getAmount()).sum();
+        double grantedDiscount = productDiscountMap.entrySet().stream().mapToDouble(entry -> entry.getValue().getDiscountAmount()).sum();
         return roundToTwoDecimalPlaces(totalDiscountAmount - grantedDiscount, BigDecimal.ROUND_HALF_UP);
     }
 
