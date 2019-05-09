@@ -10,17 +10,16 @@ import java.util.List;
 public class ProductRepository {
 
     public List<Product> getAllProducts() {
+        return createDefaultProductsList();
+    }
+
+    private List<Product> createDefaultProductsList() {
         List<Product> allProducts = new ArrayList<>();
-        Product product1 = new Product("Product1", 22.49);
-        Product product2 = new Product("Product2", 31.79);
-        Product product3 = new Product("Product3", 89.99);
-        Product product4 = new Product("Product4", 10.26);
-        Product product5 = new Product("Product5", 55.57);
-        allProducts.add(product1);
-        allProducts.add(product2);
-        allProducts.add(product3);
-        allProducts.add(product4);
-        allProducts.add(product5);
+        allProducts.add(new Product("Product1", 22.49));
+        allProducts.add(new Product("Product2", 31.79));
+        allProducts.add(new Product("Product3", 89.99));
+        allProducts.add(new Product("Product4", 10.26));
+        allProducts.add(new Product("Product5", 55.57));
         return allProducts;
     }
 }

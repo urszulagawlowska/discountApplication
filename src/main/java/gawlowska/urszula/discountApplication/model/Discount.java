@@ -1,28 +1,17 @@
 package gawlowska.urszula.discountApplication.model;
 
-import java.text.NumberFormat;
-import java.util.Locale;
-
 public class Discount {
-    private double amount;
+    private double discountAmount;
 
-    public Discount(double amount) {
-        this.amount = amount;
+    public Discount(double discountAmount) {
+        this.discountAmount = discountAmount;
     }
 
-    public double getAmount() {
-        return amount;
+    public double getDiscountAmount() {
+        return discountAmount;
     }
 
-    public void setAmount(double amount) {
-        this.amount = amount;
-    }
-
-    @Override
-    public String toString() {
-        NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("pl", "PL"));
-        return "Discount{" +
-                "amount=" + formatter.format(amount) +
-                '}';
+    public void setDiscountAmount(double discountAmount) {
+        this.discountAmount = discountAmount;
     }
 }
