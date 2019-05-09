@@ -34,20 +34,20 @@ public class DiscountServiceImpl implements DiscountService {
     @Override
     public Map<Product, Discount> getProductsWithDiscounts() throws BadInputDataException {
         Map<Product, Discount> productsWithDiscounts = new HashMap<>();
-        if (!validateData()) {
+        if (!dataAreValid()) {
             throw new BadInputDataException("Incorrect input data provided.");
         }
         double roundedProductsTotalCost = roundToTwoDecimalPlaces(getProductsTotalCost(), BigDecimal.ROUND_HALF_UP);
         double roundedTotalDiscountAmount = roundToTwoDecimalPlaces(totalDiscountAmount, BigDecimal.ROUND_HALF_UP);
         if (roundedProductsTotalCost <= roundedTotalDiscountAmount) {
-            assignProductPriceAsDiscount(productsWithDiscounts);
+            setProductPriceAsDiscount(productsWithDiscounts);
         } else {
             calculateDiscountsForProducts(productsWithDiscounts);
         }
         return productsWithDiscounts;
     }
 
-    private void assignProductPriceAsDiscount(Map<Product, Discount> productsWithDiscounts) {
+    private void setProductPriceAsDiscount(Map<Product, Discount> productsWithDiscounts) {
         for (Product product : allProducts) {
             productsWithDiscounts.put(product, new Discount(product.getPrice()));
         }
@@ -55,11 +55,10 @@ public class DiscountServiceImpl implements DiscountService {
 
     private void calculateDiscountsForProducts(Map<Product, Discount> productsWithDiscounts) {
         double unitDiscount = calculateDiscountPerOneUnit();
-        for (int i = 0; i < allProducts.size(); i++) {
-            Product product = allProducts.get(i);
-            boolean isLastProduct = i == allProducts.size() - 1;
-            boolean listContainsMoreThanOneProduct = allProducts.size() > 1;
-            if (listContainsMoreThanOneProduct && isLastProduct) {
+        for (int index = 0; index < allProducts.size(); index++) {
+            Product product = allProducts.get(index);
+            int lastIndex = allProducts.size() - 1;
+            if (allProducts.size() > 1 && index == lastIndex) {
                 productsWithDiscounts.put(product, new Discount(calculateDiscountForLastProduct(productsWithDiscounts)));
             } else {
                 productsWithDiscounts.put(product, new Discount(calculateDiscountPerProduct(product, unitDiscount)));
@@ -88,20 +87,15 @@ public class DiscountServiceImpl implements DiscountService {
         return new BigDecimal(doubleToRound).setScale(TWO_DECIMAL_PLACES, roundingMode).doubleValue();
     }
 
-    private boolean validateData() {
-        boolean dataAreValid = true;
-        boolean productsAreValid = true;
-        boolean discountIsValid = true;
+    private boolean dataAreValid() {
+        return productsAreValid() && discountIsValid();
+    }
 
-        if (totalDiscountAmount < 0) {
-            discountIsValid = false;
-        }
-        if (allProducts.size() == 0 || allProducts.size() > 5) {
-            productsAreValid = false;
-        }
-        if (!productsAreValid || !discountIsValid) {
-            dataAreValid = false;
-        }
-        return dataAreValid;
+    private boolean discountIsValid() {
+        return totalDiscountAmount > 0;
+    }
+
+    private boolean productsAreValid() {
+        return allProducts.size() > 0 && allProducts.size() <= 5;
     }
 }
