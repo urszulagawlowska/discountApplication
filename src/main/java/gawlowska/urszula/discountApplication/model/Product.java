@@ -1,8 +1,5 @@
 package gawlowska.urszula.discountApplication.model;
 
-import java.text.NumberFormat;
-import java.util.Locale;
-
 public class Product {
     private String name;
     private double price;
@@ -26,14 +23,5 @@ public class Product {
 
     public void setPrice(double price) {
         this.price = price;
-    }
-
-    @Override
-    public String toString() {
-        NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("pl", "PL"));
-        return "Product{" +
-                "name='" + name + '\'' +
-                ", price=" + formatter.format(price) +
-                '}';
     }
 }

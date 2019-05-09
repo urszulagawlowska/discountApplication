@@ -23,7 +23,8 @@ public class DiscountServiceImpl implements DiscountService {
     private List<Product> allProducts;
     private double totalDiscountAmount;
 
-    public DiscountServiceImpl(@Autowired ProductRepository productRepository, @Autowired DiscountRepository discountRepository) {
+    @Autowired
+    public DiscountServiceImpl(ProductRepository productRepository, DiscountRepository discountRepository) {
         this.productRepository = productRepository;
         this.discountRepository = discountRepository;
         this.allProducts = productRepository.getAllProducts();
