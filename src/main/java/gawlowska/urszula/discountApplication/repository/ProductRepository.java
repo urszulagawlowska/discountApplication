@@ -11,11 +11,11 @@ public class ProductRepository {
 
     public List<Product> getAllProducts() {
         List<Product> allProducts = new ArrayList<>();
-        Product product1 = new Product("Product1", 12.84);
-        Product product2 = new Product("Product2", 11.50);
-        Product product3 = new Product("Product3", 8.27);
-        Product product4 = new Product("Product4", 5.89);
-        Product product5 = new Product("Product5", 13.24);
+        Product product1 = new Product("Product1", 22.49);
+        Product product2 = new Product("Product2", 31.79);
+        Product product3 = new Product("Product3", 89.99);
+        Product product4 = new Product("Product4", 10.26);
+        Product product5 = new Product("Product5", 55.57);
         allProducts.add(product1);
         allProducts.add(product2);
         allProducts.add(product3);

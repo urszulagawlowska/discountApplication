@@ -1,5 +1,6 @@
 package gawlowska.urszula.discountApplication.service.impl;
 
+import gawlowska.urszula.discountApplication.exceptions.BadInputDataException;
 import gawlowska.urszula.discountApplication.model.Discount;
 import gawlowska.urszula.discountApplication.model.Product;
 import gawlowska.urszula.discountApplication.repository.DiscountRepository;
@@ -16,7 +17,7 @@ import java.util.Map;
 @Service
 public class DiscountServiceImpl implements DiscountService {
 
-    public static final int DECIMAL_PLACES = 2;
+    public static final int TWO_DECIMAL_PLACES = 2;
     private final ProductRepository productRepository;
     private final DiscountRepository discountRepository;
     private List<Product> allProducts;
@@ -30,43 +31,60 @@ public class DiscountServiceImpl implements DiscountService {
     }
 
     @Override
-    public Map<Product, Discount> getProductsWithDiscounts() {
+    public Map<Product, Discount> getProductsWithDiscounts() throws BadInputDataException {
         Map<Product, Discount> productsWithDiscounts = new HashMap<>();
-        if (validateData()) {
-            double unitDiscount = calculateDiscountPerOneUnit();
-            for (int i = 0; i < allProducts.size(); i++) {
-                Product product = allProducts.get(i);
-                if (allProducts.size() > 1 && i == allProducts.size() - 1) {
-                    productsWithDiscounts.put(product,
-                            new Discount(getMaxDiscount(product, calculateDiscountForLastProduct(productsWithDiscounts))));
-                } else {
-                    productsWithDiscounts.put(product,
-                            new Discount(getMaxDiscount(product, calculateDiscountForProduct(product, unitDiscount))));
-                }
-            }
+        if (!validateData()) {
+            throw new BadInputDataException("Incorrect input data provided.");
+        }
+        double roundedProductsTotalCost = roundToTwoDecimalPlaces(getProductsTotalCost(), BigDecimal.ROUND_HALF_UP);
+        double roundedTotalDiscountAmount = roundToTwoDecimalPlaces(totalDiscountAmount, BigDecimal.ROUND_HALF_UP);
+        if (roundedProductsTotalCost <= roundedTotalDiscountAmount) {
+            assignProductPriceAsDiscount(productsWithDiscounts);
+        } else {
+            calculateDiscountsForProducts(productsWithDiscounts);
         }
         return productsWithDiscounts;
     }
 
-    private double getMaxDiscount(Product product, double calculatedDiscount) {
-        double price = product.getPrice();
-        return Math.min(calculatedDiscount, price);
+    private void assignProductPriceAsDiscount(Map<Product, Discount> productsWithDiscounts) {
+        for (Product product : allProducts) {
+            productsWithDiscounts.put(product, new Discount(product.getPrice()));
+        }
     }
 
-    private double calculateDiscountForProduct(Product product, double discountPerOneUnit) {
-        double discountForProduct = product.getPrice() * discountPerOneUnit;
-        return roundDoubleToTwoDecimals(discountForProduct);
+    private void calculateDiscountsForProducts(Map<Product, Discount> productsWithDiscounts) {
+        double unitDiscount = calculateDiscountPerOneUnit();
+        for (int i = 0; i < allProducts.size(); i++) {
+            Product product = allProducts.get(i);
+            boolean isLastProduct = i == allProducts.size() - 1;
+            boolean listContainsMoreThanOneProduct = allProducts.size() > 1;
+            if (listContainsMoreThanOneProduct && isLastProduct) {
+                productsWithDiscounts.put(product, new Discount(calculateDiscountForLastProduct(productsWithDiscounts)));
+            } else {
+                productsWithDiscounts.put(product, new Discount(calculateDiscountPerProduct(product, unitDiscount)));
+            }
+        }
     }
 
-    private double roundDoubleToTwoDecimals(double doubleToRound) {
-        return new BigDecimal(doubleToRound).setScale(DECIMAL_PLACES, BigDecimal.ROUND_DOWN).doubleValue();
+    private double calculateDiscountForLastProduct(Map<Product, Discount> productDiscountMap) {
+        double grantedDiscount = productDiscountMap.entrySet().stream().mapToDouble(entry -> entry.getValue().getAmount()).sum();
+        return roundToTwoDecimalPlaces(totalDiscountAmount - grantedDiscount, BigDecimal.ROUND_HALF_UP);
+    }
+
+    private double calculateDiscountPerProduct(Product product, double discountPerOneUnit) {
+        return roundToTwoDecimalPlaces(product.getPrice() * discountPerOneUnit, BigDecimal.ROUND_DOWN);
+    }
+
+    private double getProductsTotalCost() {
+        return allProducts.stream().mapToDouble(Product::getPrice).sum();
     }
 
     private double calculateDiscountPerOneUnit() {
-        double discountPerOneUnit;
-        double totalCostOfProducts = allProducts.stream().mapToDouble(Product::getPrice).sum();
-        discountPerOneUnit = totalDiscountAmount / totalCostOfProducts;
-        return discountPerOneUnit;
+        return totalDiscountAmount / getProductsTotalCost();
+    }
+
+    private double roundToTwoDecimalPlaces(double doubleToRound, int roundingMode) {
+        return new BigDecimal(doubleToRound).setScale(TWO_DECIMAL_PLACES, roundingMode).doubleValue();
     }
 
     private boolean validateData() {
@@ -74,7 +92,7 @@ public class DiscountServiceImpl implements DiscountService {
         boolean productsAreValid = true;
         boolean discountIsValid = true;
 
-        if (!(totalDiscountAmount >= 0)) {
+        if (totalDiscountAmount < 0) {
             discountIsValid = false;
         }
         if (allProducts.size() == 0 || allProducts.size() > 5) {
@@ -84,10 +102,5 @@ public class DiscountServiceImpl implements DiscountService {
             dataAreValid = false;
         }
         return dataAreValid;
-    }
-
-    private double calculateDiscountForLastProduct(Map<Product, Discount> productDiscountMap) {
-        double grantedDiscount = productDiscountMap.entrySet().stream().mapToDouble(entry -> entry.getValue().getAmount()).sum();
-        return new BigDecimal(totalDiscountAmount - grantedDiscount).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
     }
 }

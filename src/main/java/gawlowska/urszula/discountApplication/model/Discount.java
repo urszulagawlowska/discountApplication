@@ -14,11 +14,15 @@ public class Discount {
         return amount;
     }
 
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
+
     @Override
     public String toString() {
-        NumberFormat form = NumberFormat.getCurrencyInstance(new Locale("pl", "PL"));
+        NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("pl", "PL"));
         return "Discount{" +
-                "amount=" + form.format(amount) +
+                "amount=" + formatter.format(amount) +
                 '}';
     }
 }

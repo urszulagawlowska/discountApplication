@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 public class DiscountRepository {
 
     public Discount getDiscount() {
-        Discount totalDiscount = new Discount(33);
+        Discount totalDiscount = new Discount(115);
         return totalDiscount;
     }
 }

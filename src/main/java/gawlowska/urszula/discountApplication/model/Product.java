@@ -30,10 +30,10 @@ public class Product {
 
     @Override
     public String toString() {
-        NumberFormat form = NumberFormat.getCurrencyInstance(new Locale("pl", "PL"));
+        NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("pl", "PL"));
         return "Product{" +
                 "name='" + name + '\'' +
-                ", price=" + form.format(price) +
+                ", price=" + formatter.format(price) +
                 '}';
     }
 }
