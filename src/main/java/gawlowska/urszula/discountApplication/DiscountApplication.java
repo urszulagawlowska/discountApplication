@@ -1,13 +1,13 @@
-package gawlowska.urszula.discoutApplication;
+package gawlowska.urszula.discountApplication;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class DiscoutApplication {
+public class DiscountApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(DiscoutApplication.class, args);
+		SpringApplication.run(DiscountApplication.class, args);
 	}
 
 }
